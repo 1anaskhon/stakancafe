@@ -2486,57 +2486,65 @@ function buildTelegramMarkdown(order){
   return lines.join("\n");
 }
 
-async function sendToTelegram(text){
-  if(!CONFIG.TELEGRAM_BOT_TOKEN) return false;
+async function sendToTelegram(text) {
+  if (!CONFIG.TELEGRAM_BOT_TOKEN) return false;
+
+  // Ikkala Chat ID ni bitta massivga olamiz
   const chatIds = [CONFIG.TELEGRAM_CHAT_ID, CONFIG.TELEGRAM_CHAT_ID_2].filter(Boolean);
+
   let success = true;
 
   for (const chatId of chatIds) {
-    try{
+    try {
       const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
       const res = await fetch(url, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: chatId,
           text: text,
           parse_mode: "Markdown"
         })
       });
-      if(!res.ok) success = false;
-    }catch(err){
-      console.error("Telegram yuborishda xatolik (" + chatId + "):", err);
+      if (!res.ok) {
+        console.error("Telegram API error (" + chatId + "): " + res.status);
+        success = false;
+      }
+    } catch (err) {
+      console.error("Telegram yuborishda xatolik:", err);
       success = false;
     }
   }
 
-  if(!success) {
-    showToast(t("toastTelegramFail"), "error");
-  }
   return success;
 }
 /* Mijoz xaritadan tanlagan joylashuvni Telegram botga
    haqiqiy metka (native location pin) sifatida yuboradi. */
-async function sendLocationToTelegram(loc){
-  if(!CONFIG.TELEGRAM_BOT_TOKEN || !loc) return false;
+async function sendLocationToTelegram(loc) {
+  if (!CONFIG.TELEGRAM_BOT_TOKEN || !loc) return false;
+
   const chatIds = [CONFIG.TELEGRAM_CHAT_ID, CONFIG.TELEGRAM_CHAT_ID_2].filter(Boolean);
+
   let success = true;
 
   for (const chatId of chatIds) {
-    try{
+    try {
       const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendLocation`;
       const res = await fetch(url, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: chatId,
           latitude: loc.lat,
           longitude: loc.lng
         })
       });
-      if(!res.ok) success = false;
-    }catch(err){
-      console.error("Lokatsiya yuborishda xatolik (" + chatId + "):", err);
+      if (!res.ok) {
+        console.error("Telegram sendLocation error (" + chatId + "): " + res.status);
+        success = false;
+      }
+    } catch (err) {
+      console.error("Lokatsiya yuborishda xatolik:", err);
       success = false;
     }
   }
