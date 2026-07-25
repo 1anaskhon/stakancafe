@@ -18,16 +18,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#150d0e;
-    --bg-2:#110a0b;
-    --card:#1e1512;
-    --card-2:#241a16;
-    --card-3:#2a1f1a80;
-    --border:rgba(255,255,255,.08);
-    --border-strong:rgba(255,255,255,.15);
-    --text:#f4f6f9;
-    --muted:#a89b93;
-    --muted-2:#7a6c64;
+    --bg:#e2231a;
+    --bg-2:#b8181a;
+    --card:#ffffff;
+    --card-2:#fff4ef;
+    --card-3:rgba(255,255,255,.55);
+    --border:rgba(0,0,0,.08);
+    --border-strong:rgba(0,0,0,.18);
+    --text:#201512;
+    --muted:#7a6a63;
+    --muted-2:#a89b93;
+    --on-red:#ffffff;
+    --on-red-muted:rgba(255,255,255,.8);
     --yellow:#22c55e;
     --yellow-dim:#14532d;
     --red:#e11d2e;
@@ -36,8 +38,8 @@
     --radius-lg:22px;
     --radius-md:16px;
     --radius-sm:11px;
-    --shadow-1:0 10px 30px -12px rgba(0,0,0,.55);
-    --shadow-2:0 20px 45px -18px rgba(0,0,0,.6);
+    --shadow-1:0 10px 30px -12px rgba(0,0,0,.35);
+    --shadow-2:0 20px 45px -18px rgba(0,0,0,.4);
     --shadow-yellow:0 10px 26px -10px rgba(34,197,94,.45);
     --shadow-red:0 10px 26px -10px rgba(225,29,46,.45);
     --nav-h:72px;
@@ -57,9 +59,9 @@
     min-height:100dvh;
     min-height:100svh;
     background:
-      radial-gradient(1200px 700px at 88% -8%, rgba(34,197,94,.16), transparent 62%),
-      radial-gradient(1000px 600px at -8% 8%, rgba(225,29,46,.15), transparent 58%),
-      radial-gradient(900px 500px at 50% 105%, rgba(34,197,94,.09), transparent 60%),
+      radial-gradient(1200px 700px at 88% -8%, rgba(34,197,94,.10), transparent 62%),
+      radial-gradient(1000px 600px at -8% 8%, rgba(0,0,0,.14), transparent 58%),
+      radial-gradient(900px 500px at 50% 105%, rgba(34,197,94,.06), transparent 60%),
       var(--bg);
     color:var(--text);
     font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -88,10 +90,10 @@
     position:sticky; top:0; z-index:60;
     padding-top:calc(14px + var(--safe-t));
     padding-bottom:14px;
-    background:rgba(21,13,14,.74);
+    background:rgba(120,15,17,.82);
     backdrop-filter:blur(16px) saturate(140%);
     -webkit-backdrop-filter:blur(16px) saturate(140%);
-    border-bottom:1px solid var(--border);
+    border-bottom:1px solid rgba(255,255,255,.1);
   }
   .header-inner{display:flex; align-items:center; justify-content:space-between; gap:16px;}
   .brand{display:flex; align-items:center; gap:11px; font-weight:800; font-size:19px; letter-spacing:.01em;}
@@ -110,7 +112,7 @@
   .desktop-nav button{
     display:flex; align-items:center; gap:9px;
     padding:8px 16px 8px 8px; border-radius:12px; font-weight:600; font-size:14.5px;
-    color:var(--muted); transition:.25s var(--ease);
+    color:var(--on-red-muted); transition:.25s var(--ease);
   }
   .desktop-nav button i{font-size:15px; width:16px; text-align:center;}
   .desktop-nav button:hover{color:var(--text); background:var(--card);}
@@ -212,17 +214,9 @@
     font-size:12.5px; font-weight:700; color:var(--yellow); letter-spacing:.03em; margin-bottom:18px;
   }
   .eyebrow i{font-size:11px;}
-  .hero h1{font-size:clamp(32px,5vw,52px); line-height:1.05; font-weight:900;}
-  .hero h1 span{
-    color:#062b14;
-    background:var(--yellow);
-    padding:0 5px;
-    border-radius:6px;
-    line-height:0.95;
-    box-decoration-break:clone;
-    -webkit-box-decoration-break:clone;
-  }
-  .hero p.lead{margin-top:16px; color:var(--muted); font-size:16.5px; max-width:460px; line-height:1.6;}
+  .hero h1{font-size:clamp(32px,5vw,52px); line-height:1.05; font-weight:900; color:var(--on-red);}
+  .hero h1 span{color:var(--yellow);}
+  .hero p.lead{margin-top:16px; color:var(--on-red-muted); font-size:16.5px; max-width:460px; line-height:1.6;}
   .hero-ctas{display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;}
 
   .btn{
@@ -247,13 +241,13 @@
   .btn:disabled{opacity:.5; cursor:not-allowed; transform:none !important; box-shadow:none !important;}
 
   .hero-stats{display:flex; gap:26px; margin-top:34px; flex-wrap:wrap;}
-  .hero-stat b{display:block; font-size:23px; font-weight:900; color:var(--yellow);}
-  .hero-stat span{font-size:12.5px; color:var(--muted); font-weight:600;}
+  .hero-stat b{display:block; font-size:23px; font-weight:900; color:var(--on-red);}
+  .hero-stat span{font-size:12.5px; color:var(--on-red-muted); font-weight:600;}
   .hero-rating{
-    display:flex; align-items:center; gap:8px; margin-top:16px; font-size:14px; font-weight:700; color:var(--text);
+    display:flex; align-items:center; gap:8px; margin-top:16px; font-size:14px; font-weight:700; color:var(--on-red);
   }
   .hero-rating i{color:var(--yellow); font-size:16px;}
-  .hero-rating span{color:var(--muted); font-weight:600; font-size:12.5px;}
+  .hero-rating span{color:var(--on-red-muted); font-weight:600; font-size:12.5px;}
 
   /* ============ ORDER TRACKER (Mening buyurtmam) ============ */
   .tracker-card{background:var(--card); border:1px solid var(--border); border-radius:20px; padding:26px 22px; margin-bottom:20px;}
@@ -378,8 +372,8 @@
   /* ============ SECTION HEADINGS ============ */
   .section{padding:40px 0;}
   .section-head{display:flex; align-items:flex-end; justify-content:space-between; gap:14px; margin-bottom:22px; flex-wrap:wrap;}
-  .section-head h2{font-size:clamp(21px,3vw,28px); font-weight:900;}
-  .section-head p{color:var(--muted); font-size:14px; margin-top:5px;}
+  .section-head h2{font-size:clamp(21px,3vw,28px); font-weight:900; color:var(--on-red);}
+  .section-head p{color:var(--on-red-muted); font-size:14px; margin-top:5px;}
   .section-head .see-all{font-weight:700; font-size:13.5px; color:var(--yellow); display:flex; align-items:center; gap:6px;}
 
   /* ============ CATEGORY TABS ============ */
@@ -601,7 +595,7 @@
   @media (max-width:880px){.mobile-nav{display:flex; justify-content:space-around; align-items:center; gap:4px;}}
   .mnav-btn{
     position:relative; display:flex; flex-direction:column; align-items:center; gap:4px;
-    padding:8px 8px; border-radius:14px; color:var(--muted); font-size:9.5px; font-weight:700;
+    padding:8px 8px; border-radius:14px; color:var(--on-red-muted); font-size:9.5px; font-weight:700;
     transition:.25s var(--ease); flex:1; max-width:80px; overflow:visible;
   }
   .mnav-btn i{font-size:19px; transition:.25s var(--ease);}
@@ -667,7 +661,7 @@
   }
   @keyframes successPop{0%{transform:scale(.5); opacity:0;}70%{transform:scale(1.08);}100%{transform:scale(1); opacity:1;}}
 
-  .footer-note{text-align:center; color:var(--muted-2); font-size:12px; padding:30px 0 10px;}
+  .footer-note{text-align:center; color:var(--on-red-muted); font-size:12px; padding:30px 0 10px;}
   .footer-note i{color:var(--red);}
 
   /* ============ ADMIN PANEL ============ */
@@ -763,10 +757,10 @@
   /* ============ CART BO'LIMI - QIZIL AKSENT (Menyu bo'limi yashil bilan farqlansin) ============ */
   #view-cart .price{color:var(--red);}
   #view-cart .btn-primary{
-    background:linear-gradient(150deg,var(--red),var(--red-dim)); color:#fff;
-    box-shadow:var(--shadow-red);
+    background:linear-gradient(150deg,#fff,#f3f3f3); color:var(--red-dim);
+    box-shadow:0 10px 26px -10px rgba(0,0,0,.35);
   }
-  #view-cart .btn-primary:hover{box-shadow:0 16px 32px -12px rgba(225,29,46,.55);}
+  #view-cart .btn-primary:hover{box-shadow:0 16px 32px -12px rgba(0,0,0,.4);}
   #view-cart .delivery-opt.active{border-color:var(--red); background:rgba(225,29,46,.1); color:var(--red); box-shadow:0 0 0 1px rgba(225,29,46,.2) inset;}
   #view-cart .schedule-opt.active{border-color:var(--red); background:rgba(225,29,46,.09); color:var(--red);}
   #view-cart .field input:focus, #view-cart .field textarea:focus{border-color:var(--red); box-shadow:0 0 0 3px rgba(225,29,46,.15);}
