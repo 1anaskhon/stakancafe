@@ -2797,37 +2797,37 @@ function buildTelegramMarkdown(order){
   const dt = new Date(order.date);
   const dateStr = dt.toLocaleString(state.lang==="ru"?"ru-RU":state.lang==="en"?"en-US":"uz-UZ");
   let lines = [];
-  lines.push(`*\u{1f9fe} Yangi buyurtma \u{2014} Lavash Center*`);
+  lines.push(`\u{1f9fe} Yangi buyurtma \u{2014} Lavash Center`);
   lines.push(``);
-  lines.push(`*Mijoz:* ${order.name}`);
-  lines.push(`*Telefon:* ${order.phone}`);
+  lines.push(`Mijoz: ${order.name}`);
+  lines.push(`Telefon: ${order.phone}`);
   if(order.orderNumber){
-    lines.push(`*Bu mijozning:* ${order.orderNumber}-buyurtmasi \u{1f501}`);
+    lines.push(`Bu mijozning: ${order.orderNumber}-buyurtmasi \u{1f501}`);
   }
-  lines.push(`*Turi:* ${order.deliveryType==="delivery" ? "Yetkazib berish" : "Olib ketish"}`);
+  lines.push(`Turi: ${order.deliveryType==="delivery" ? "Yetkazib berish" : "Olib ketish"}`);
   if(order.scheduleType==="later" && order.scheduledTime){
-    lines.push(`*Yetkazish vaqti:* \u{23f0} ${order.scheduledTime} (kechroq)`);
+    lines.push(`Yetkazish vaqti: \u{23f0} ${order.scheduledTime} (kechroq)`);
   } else {
-    lines.push(`*Yetkazish vaqti:* Tezkor (hozir)`);
+    lines.push(`Yetkazish vaqti: Tezkor (hozir)`);
   }
   if(order.deliveryType==="delivery" && order.location){
     const loc = order.location;
-    if(loc.address) lines.push(`*Manzil:* ${loc.address}`);
-    lines.push(`*Xarita:* https://maps.google.com/?q=${loc.lat},${loc.lng}`);
+    if(loc.address) lines.push(`Manzil: ${loc.address}`);
+    lines.push(`Xarita: https://maps.google.com/?q=${loc.lat},${loc.lng}`);
   }
-  if(order.comment) lines.push(`*Izoh:* ${order.comment}`);
+  if(order.comment) lines.push(`Izoh: ${order.comment}`);
   lines.push(``);
-  lines.push(`*Mahsulotlar:*`);
+  lines.push(`Mahsulotlar:`);
   order.items.forEach(it=>{
     const modsText = (it.modifiers && it.modifiers.length) ? ` (${it.modifiers.map(m=>m.name.uz).join(", ")})` : "";
     lines.push(`\u{2022} ${it.name.uz}${modsText} x${it.qty} \u{2014} ${it.price*it.qty} so'm`);
   });
   lines.push(``);
-  lines.push(`*Mahsulotlar summasi:* ${order.subtotal} so'm`);
-  lines.push(`*Yetkazib berish:* ${order.deliveryFee} so'm`);
-  lines.push(`*Jami:* ${order.total} so'm`);
+  lines.push(`Mahsulotlar summasi: ${order.subtotal} so'm`);
+  lines.push(`Yetkazib berish: ${order.deliveryFee} so'm`);
+  lines.push(`Jami: ${order.total} so'm`);
   lines.push(``);
-  lines.push(`_Sana: ${dateStr}_`);
+  lines.push(`Sana: ${dateStr}`);
   return lines.join("\n");
 }
 
@@ -2836,22 +2836,45 @@ async function sendToTelegram(text){
   const chatIds = [CONFIG.TELEGRAM_CHAT_ID, CONFIG.TELEGRAM_CHAT_ID_2].filter(Boolean);
   let success = true;
 
+  // Telegram caps a single message at ~4096 characters - split long orders into chunks
+  const chunks = [];
+  const lines = text.split("\n");
+  let current = "";
+  for(const line of lines){
+    if((current + "\n" + line).length > 3800){
+      chunks.push(current);
+      current = line;
+    } else {
+      current = current ? current + "\n" + line : line;
+    }
+  }
+  if(current) chunks.push(current);
+
   for (const chatId of chatIds) {
-    try{
-      const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
-      const res = await fetch(url, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: text,
-          parse_mode: "Markdown"
-        })
-      });
-      if(!res.ok) success = false;
-    }catch(err){
-      console.error("Telegram yuborishda xatolik (" + chatId + "):", err);
-      success = false;
+    for(const chunk of chunks){
+      try{
+        const url = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
+        const res = await fetch(url, {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: chunk
+          })
+        });
+        if(!res.ok){
+          success = false;
+          try{
+            const errBody = await res.json();
+            console.error("Telegram sendMessage rad etdi (" + chatId + "):", errBody);
+          }catch(parseErr){
+            console.error("Telegram sendMessage rad etdi (" + chatId + "), javobni o'qib bo'lmadi.");
+          }
+        }
+      }catch(err){
+        console.error("Telegram yuborishda xatolik (" + chatId + "):", err);
+        success = false;
+      }
     }
   }
 
